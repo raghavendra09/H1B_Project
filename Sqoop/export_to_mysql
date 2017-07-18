@@ -1,0 +1,2 @@
+sqoop-export --connect jdbc:mysql://localhost/h1b --username root --password rockstar --table h1bfinal --export-dir /user/hduser/10.txt/part-r-00000 --input-fields-terminated-by '\t'
+

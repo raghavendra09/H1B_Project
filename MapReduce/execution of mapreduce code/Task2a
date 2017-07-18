@@ -1,0 +1,3 @@
+hadoop jar Task2a.jar Task2a /user/hive/warehouse/h1b.db/h1b /user/hduser/hadoop/Task2aoutput;
+
+hadoop fs -cat /user/hduser/hadoop/Task2aoutput/p*;

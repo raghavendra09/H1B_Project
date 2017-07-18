@@ -1,0 +1,1 @@
+select  worksite,job_title,year, count(*) from h1b where job_title=='DATA ENGINEER' group by worksite,job_title,year;

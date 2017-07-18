@@ -1,0 +1,1 @@
+select  worksite, case_status,year,count(worksite) as rag from h1b where case_status == 'CERTIFIED' or case_status == 'CERTIFIED-WITHDRAW' group by worksite,case_status,year order by rag desc limit 5;

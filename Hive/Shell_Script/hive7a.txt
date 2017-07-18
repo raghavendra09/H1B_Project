@@ -1,0 +1,1 @@
+select year,count(soc_name) as applications from h1b group by year;

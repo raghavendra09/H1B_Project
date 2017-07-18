@@ -1,0 +1,375 @@
+h1b= LOAD '/user/hive/warehouse/h1b.db/h1b' using PigStorage('\t') AS
+(s_no:int,case_status:chararray,employer_name:chararray,soc_name:chararray,job_title:chararray,full_time_position:chararray,prevailing_wage:double,year:int ,worksite1:chararray,longitute:double, latitute:double);
+
+
+1 a) Is the number of petitions with Data Engineer job title increasing over time?
+
+     fil = filter h1b by job_title == 'DATA ENGINEER';
+     disp = foreach fil generate soc_name,year;
+     grupby = group disp by $1;
+     con = foreach grupby generate $0,COUNT(disp.soc_name);
+
+     dump con;
+
+     Output: (2011,18)
+             (2012,32)
+             (2013,41)
+             (2014,89)
+             (2015,160)
+             (2016,251)
+
+1 b) Find top 5 job titles who are having highest growth in applications?
+
+     disp = foreach h1b generate job_title;
+     grupby = group disp by $0;
+     con = foreach grupby generate $0,COUNT(disp.$0);
+     ord = order con by $1 desc;
+     lmt = limit ord 5;
+
+     dump lmt;
+
+     Output: (2016,251)
+             (2015,160)
+             (2014,89)
+             (2013,41)
+             (2012,32)
+
+2 a) Which part of the US has the most Data Engineer jobs for each year?
+
+     fil = FILTER h1b by job_title == 'DATA ENGINEER' ;
+     dis =foreach fil generate job_title,year;
+     grp2013 = group dis by (job_title,year);
+     cunt2013 = foreach grp2013 generate $0.year,$0.job_title,COUNT(dis.$0) as TEngr;
+     yer = group cunt2013 by $0;
+     top5 = foreach yer { sorted = order cunt2013 by TEngr desc ; top = limit sorted 5 ; generate flatten(top); }; 
+     
+     dump top5;
+
+     Output: (2011,DATA ENGINEER,18)
+	     (2012,DATA ENGINEER,32)
+	     (2013,DATA ENGINEER,41)
+	     (2014,DATA ENGINEER,89)
+	     (2015,DATA ENGINEER,160)
+	     (2016,DATA ENGINEER,251)
+
+2 b) find top 5 locations in the US who have got certified visa for each year?
+	
+     fil = FILTER h1b by case_status == 'CERTIFIED' or case_status == 'CERTIFIED-WITHDRAWN';
+     dis =foreach fil generate worksite1,year;
+     grp2013 = group dis by (worksite1,year);
+     cunt2013 = foreach grp2013 generate $0.year,$0.worksite1,COUNT(dis.$0) as TaprdVisa;
+     yer = group cunt2013 by $0;
+     top5 = foreach yer { sorted = order cunt2013 by TaprdVisa desc ; top = limit sorted 5 ; generate flatten(top); }; 
+
+     dump top5;
+
+     Output: (2011,NEW YORK, NEW YORK,24024)
+	     (2011,HOUSTON, TEXAS,8619)
+	     (2011,CHICAGO, ILLINOIS,5410)
+	     (2011,SAN FRANCISCO, CALIFORNIA,4893)
+	     (2011,SAN JOSE, CALIFORNIA,4883)
+	     (2012,NEW YORK, NEW YORK,26161)
+	     (2012,HOUSTON, TEXAS,11145)
+	     (2012,SAN FRANCISCO, CALIFORNIA,6763)
+	     (2012,CHICAGO, ILLINOIS,6131)
+	     (2012,ATLANTA, GEORGIA,5958)
+	     (2013,NEW YORK, NEW YORK,25888)
+	     (2013,HOUSTON, TEXAS,12249)
+	     (2013,SAN FRANCISCO, CALIFORNIA,8003)
+	     (2013,SAN JOSE, CALIFORNIA,7243)
+	     (2013,ATLANTA, GEORGIA,6853)
+	     (2014,NEW YORK, NEW YORK,30132)
+	     (2014,HOUSTON, TEXAS,14476)
+	     (2014,SAN FRANCISCO, CALIFORNIA,10779)
+	     (2014,SAN JOSE, CALIFORNIA,8914)
+	     (2014,ATLANTA, GEORGIA,8608)
+	     (2015,NEW YORK, NEW YORK,34216)
+	     (2015,HOUSTON, TEXAS,16606)
+	     (2015,SAN FRANCISCO, CALIFORNIA,13815)
+	     (2015,ATLANTA, GEORGIA,11137)
+	     (2015,SAN JOSE, CALIFORNIA,10471)
+	     (2016,NEW YORK, NEW YORK,37746)
+	     (2016,HOUSTON, TEXAS,15514)
+	     (2016,SAN FRANCISCO, CALIFORNIA,15029)
+	     (2016,ATLANTA, GEORGIA,12382)
+	     (2016,CHICAGO, ILLINOIS,11998)
+
+3) Which industry has the most number of Data Scientist positions?
+
+   fil  = filter h1b by job_title == 'DATA ENGINEER';
+   dis = foreach fil generate soc_name,job_title;
+   grup = group dis by soc_name;
+   con = foreach grup generate group,COUNT(dis.job_title) as total;
+   odr = order con by total desc;
+
+   dump odr;
+
+   Output: (SOFTWARE DEVELOPERS, APPLICATIONS,157)
+	   (COMPUTER OCCUPATIONS, ALL OTHER,92)
+	   (SOFTWARE DEVELOPERS, SYSTEMS SOFTWARE,43)
+	   (Computer Occupations, All Other,38)
+	   (Software Developers, Applications,38)
+	   (Database Administrators,38)
+	   (DATABASE ADMINISTRATORS,28)
+	   (COMPUTER SYSTEMS ANALYSTS,27)
+	   (Computer Systems Analysts,18)
+	   (OPERATIONS RESEARCH ANALYSTS,17)
+	   (Software Developers, Systems Software,16)
+	   (STATISTICIANS,14)
+	   (Computer Software Engineers, Applications,10)
+	   (COMPUTER PROGRAMMERS,8)
+	   (COMPUTER AND INFORMATION RESEARCH SCIENTISTS,5)
+	   (COMPUTER NETWORK SUPPORT SPECIALISTS,5)
+	   (ENGINEERS, ALL OTHER,4)
+	   (Computer Programmers,4)
+	   (Operations Research Analysts,4)
+	   (COMPUTER AND INFORMATION SYSTEMS MANAGERS,3)
+	   (Computer Specialists, All Other,3)
+	   (Computer Software Engineers, Systems Software,2)
+	   (DATA WAREHOUSING SPECIALISTS,2)
+	   (Statisticians,2)
+	   (Computer Network Architects,1)
+	   (Computer Occupations, All Other*,1)
+	   (Engineers, All Other,1)
+	   (Geological and Petroleum Technicians,1)
+	   (MATHEMATICAL SCIENCE OCCUPATIONS, ALL OTHER,1)
+	   (NETWORK AND COMPUTER SYSTEMS ADMINISTRATORS,1)
+	   (MANAGEMENT ANALYSTS,1)
+	   (Web Developers,1)
+	   (MATHEMATICIANS,1)
+	   (Actuaries,1)
+	   (Computer and Information Research Scientists,1)
+	   (LOGISTICIANS,1)
+	   (MATHEMATICAL TECHNICIANS,1)
+
+
+4) Which top 5 employers file the most petitions each year?
+
+   dis =foreach h1b generate employer_name,year;
+   grp2013 = group dis by (employer_name,year);
+   cunt2013 = foreach grp2013 generate $0.year,$0.employer_name,COUNT(dis.$0) as petin;
+   yer = group cunt2013 by $0;
+   top5 = foreach yer { sorted = order cunt2013 by petin desc ; top = limit sorted 5 ; generate flatten(top); }; 
+
+   dump top5;
+
+   Output: (2011,TATA CONSULTANCY SERVICES LIMITED,5416)
+	   (2011,MICROSOFT CORPORATION,4253)
+	   (2011,DELOITTE CONSULTING LLP,3621)
+	   (2011,WIPRO LIMITED,3028)
+	   (2011,COGNIZANT TECHNOLOGY SOLUTIONS U.S. CORPORATION,2721)
+	   (2012,INFOSYS LIMITED,15818)
+	   (2012,WIPRO LIMITED,7182)
+	   (2012,TATA CONSULTANCY SERVICES LIMITED,6735)
+	   (2012,DELOITTE CONSULTING LLP,4727)
+           (2012,IBM INDIA PRIVATE LIMITED,4074)
+	   (2013,INFOSYS LIMITED,32223)
+	   (2013,TATA CONSULTANCY SERVICES LIMITED,8790)
+	   (2013,WIPRO LIMITED,6734)
+	   (2013,DELOITTE CONSULTING LLP,6124)
+	   (2013,ACCENTURE LLP,4994)
+	   (2014,INFOSYS LIMITED,23759)
+	   (2014,TATA CONSULTANCY SERVICES LIMITED,14098)
+	   (2014,WIPRO LIMITED,8365)
+	   (2014,DELOITTE CONSULTING LLP,7017)
+	   (2014,ACCENTURE LLP,5498)
+	   (2015,INFOSYS LIMITED,33245)
+	   (2015,TATA CONSULTANCY SERVICES LIMITED,16553)
+	   (2015,WIPRO LIMITED,12201)
+	   (2015,IBM INDIA PRIVATE LIMITED,10693)
+	   (2015,ACCENTURE LLP,9605)
+	   (2016,INFOSYS LIMITED,25352)
+	   (2016,CAPGEMINI AMERICA INC,16725)
+	   (2016,TATA CONSULTANCY SERVICES LIMITED,13134)
+	   (2016,WIPRO LIMITED,10607)
+	   (2016,IBM INDIA PRIVATE LIMITED,9787)
+
+
+5) Find the most popular top 10 job positions for H1B visa applications for each year?
+
+   dis =foreach h1b generate job_title,year;
+   grp2013 = group dis by (job_title,year);
+   cunt2013 = foreach grp2013 generate $0.year,$0.job_title,COUNT(dis.$0) as Tapplications;
+   yer = group cunt2013 by $0;
+   top10 = foreach yer { sorted = order cunt2013 by Tapplications desc ; top = limit sorted 5 ; generate flatten(top); }; 
+
+   dump top10;
+
+   Output: (2011,PROGRAMMER ANALYST,31799)
+	   (2011,SOFTWARE ENGINEER,12763)
+	   (2011,COMPUTER PROGRAMMER,8998)
+	   (2011,SYSTEMS ANALYST,8644)
+	   (2011,BUSINESS ANALYST,3891)
+	   (2012,PROGRAMMER ANALYST,33066)
+	   (2012,SOFTWARE ENGINEER,14437)
+	   (2012,COMPUTER PROGRAMMER,9629)
+	   (2012,SYSTEMS ANALYST,9296)
+	   (2012,BUSINESS ANALYST,4752)
+	   (2013,PROGRAMMER ANALYST,33880)
+	   (2013,SOFTWARE ENGINEER,15680)
+	   (2013,COMPUTER PROGRAMMER,11271)
+	   (2013,SYSTEMS ANALYST,8714)
+	   (2013,TECHNOLOGY LEAD - US,7853)
+	   (2014,PROGRAMMER ANALYST,43114)
+	   (2014,SOFTWARE ENGINEER,20500)
+	   (2014,COMPUTER PROGRAMMER,14950)
+	   (2014,SYSTEMS ANALYST,10194)
+	   (2014,SOFTWARE DEVELOPER,7337)
+	   (2015,PROGRAMMER ANALYST,53436)
+	   (2015,SOFTWARE ENGINEER,27259)
+	   (2015,COMPUTER PROGRAMMER,14054)
+	   (2015,SYSTEMS ANALYST,12803)
+	   (2015,SOFTWARE DEVELOPER,10441)
+	   (2016,PROGRAMMER ANALYST,53743)
+	   (2016,SOFTWARE ENGINEER,30668)
+           (2016,SOFTWARE DEVELOPER,14041)
+	   (2016,SYSTEMS ANALYST,12314)
+	   (2016,COMPUTER PROGRAMMER,11668)
+
+6) Find the percentage and the count of each case status on total applications for each year. Create a graph depicting the pattern of All the 
+   cases over the period of time.
+
+   totalrecgrup = group h1b ALL;
+   totalrec = foreach totalrecgrup generate COUNT(h1b.soc_name)as totalApplications;
+   dis = foreach h1b generate year,case_status;
+   grp = GROUP dis by year;
+   con = foreach grp generate $0,COUNT($1) as case_application;
+   perc = foreach con generate $0,ROUND_TO(((case_application/(double)totalrec.totalApplications)*100),2);
+   odr = order perc by $1 desc;
+
+   dump odr;
+
+   Output: (2016,21.58)
+	   (2015,20.61)
+	   (2014,17.3)
+	   (2013,14.73)
+	   (2012,13.84)
+	   (2011,11.95)
+
+7) Create a bar graph to depict the number of applications for each year
+
+   dis = foreach h1b generate year,soc_name;
+   groupby = group dis by year;
+   con = foreach groupby generate $0,COUNT(dis.soc_name);
+
+   dump con;
+
+   Output: (2011,358767)
+	   (2012,415607)
+	   (2013,442114)
+	   (2014,519427)
+	   (2015,618727)
+	   (2016,647803)
+
+8) Find the average Prevailing Wage for each Job for each Year (take part time and full time separate)
+
+   fil = filter h1b by full_time_position == 'Y';
+   tme_Y = group fil by (job_title,year);
+   sum_Y = foreach tme_Y generate group,AVG(fil.prevailing_wage) as AVG_Y;
+   odr_Y = order sum_Y by $1 desc;
+
+   fil = filter h1b by full_time_position == 'N';
+   tme_N = group fil by (job_title,year);
+   sum_N = foreach tme_N generate group,AVG(fil.prevailing_wage) as AVG_N;
+   odr_N = order sum_N by $1 desc;
+
+   join1 = join sum_Y by $0,sum_N by $0;
+   for = foreach join1 generate $0,$1,$3;
+   odr = order for by $1 desc;
+   lim = limit odr 4;
+
+   dump lim;
+
+   Output: ((CONSTRUCTION TECHNICAL SERVICES SPECIALIST II,2016),1.3827216E8,66477.0)
+	   ((AREA RETAIL SALES AND OPERATIONS MANAGER,2014),1.3052832E8,62753.0)
+	   ((LAB ENGINEER,2016),1.2992096E8,50852.0)
+	   ((ERP BI DEVELOPER 3,2016),1.152112E8,58458.0)
+
+9) Which are top ten employers who have the highest success rate in petitions?
+
+   totalrecgrup = group h1b ALL;
+   totalrec = foreach totalrecgrup generate COUNT(h1b.soc_name)as totalApplications;
+
+   rec = foreach h1b generate employer_name,case_status;
+   fil_suc = FILTER rec by case_status == 'CERTIFIED' or case_status == 'CERTIFIED-WITHDRAWN';
+   rec1 = foreach fil_suc generate employer_name,case_status;
+   groupby = group rec1 by employer_name;
+   coutofEmplye = foreach groupby generate $0,COUNT(rec1.case_status) as cerftifiedApplications;
+
+   perc = foreach coutofEmplye generate $0,(cerftifiedApplications/(double)totalrec.totalApplications)*100;
+
+   odr = order perc by $1 desc;
+   lim = LIMIT odr 10;
+
+   dump lim;
+
+   Output: (INFOSYS LIMITED,4.329538093120773)
+	   (TATA CONSULTANCY SERVICES LIMITED,2.141488020596547)
+	   (WIPRO LIMITED,1.57518289260919)
+	   (DELOITTE CONSULTING LLP,1.203285988585969)
+	   (ACCENTURE LLP,1.1072309401171379)
+	   (IBM INDIA PRIVATE LIMITED,0.9993521946280448)
+	   (MICROSOFT CORPORATION,0.8355856643502212)
+	   (HCL AMERICA, INC.,0.7497889220285467)
+	   (ERNST & YOUNG U.S. LLP,0.5954147369893537)
+	   (LARSEN & TOUBRO INFOTECH LIMITED,0.5606763820819366)
+
+10) Which are the top 10 job positions which have the highest success rate in petitions?
+
+    totalrecgrup = group h1b ALL;
+    totalrec = foreach totalrecgrup generate COUNT(h1b.soc_name)as totalApplications;
+
+    rec = foreach h1b generate job_title,case_status;
+    fil_suc = FILTER rec by case_status == 'CERTIFIED' or case_status == 'CERTIFIED-WITHDRAWN';
+    rec1 = foreach fil_suc generate job_title,case_status;
+    groupby = group rec1 by job_title;
+    coutofEmplye = foreach groupby generate $0,COUNT(rec1.case_status) as cerftifiedApplications;
+
+    d = foreach coutofEmplye generate $0,(((cerftifiedApplications/(double)totalrec.totalApplications)*100));
+
+    odr = order d by $1 desc;
+    lim = LIMIT odr 10;
+
+    dump lim;
+
+    Output: (PROGRAMMER ANALYST,7.973335065255151)
+	    (SOFTWARE ENGINEER,3.842934674906618)
+	    (COMPUTER PROGRAMMER,2.2476681504573772)
+	    (SYSTEMS ANALYST,1.9801861482891443)
+	    (SOFTWARE DEVELOPER,1.3504660368466366)
+	    (BUSINESS ANALYST,1.2581412815222262)
+	    (COMPUTER SYSTEMS ANALYST,1.1085631876687165)
+	    (TECHNOLOGY LEAD - US,0.9423653056092617)
+	    (TECHNOLOGY ANALYST - US,0.8657277652046914)
+	    (SENIOR SOFTWARE ENGINEER,0.8545701919602191)
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,153 @@
+h1b= LOAD '/user/hive/warehouse/h1b.db/h1b' using PigStorage('\t') AS
+(s_no:int,case_status:chararray,employer_name:chararray,soc_name:chararray,job_title:chararray,full_time_position:chararray,prevailing_wage:double,year:int ,worksite1:chararray,longitute:double, latitute:double);
+
+
+1 a) Is the number of petitions with Data Engineer job title increasing over time?
+
+     fil = filter h1b by job_title == 'DATA ENGINEER';
+     disp = foreach fil generate soc_name,year;
+     grupby = group disp by $1;
+     con = foreach grupby generate $0,COUNT(disp.soc_name);
+
+     dump con;
+
+1 b) Find top 5 job titles who are having highest growth in applications?
+
+     disp = foreach h1b generate job_title;
+     grupby = group disp by $0;
+     con = foreach grupby generate $0,COUNT(disp.$0);
+     ord = order con by $1 desc;
+     lmt = limit ord 5;
+
+     dump lmt;
+
+2 a) Which part of the US has the most Data Engineer jobs for each year?
+
+     fil = FILTER h1b by job_title == 'DATA ENGINEER' ;
+     dis =foreach fil generate job_title,year;
+     grp2013 = group dis by (job_title,year);
+     cunt2013 = foreach grp2013 generate $0.year,$0.job_title,COUNT(dis.$0) as TEngr;
+     yer = group cunt2013 by $0;
+     top5 = foreach yer { sorted = order cunt2013 by TEngr desc ; top = limit sorted 5 ; generate flatten(top); }; 
+     
+     dump top5;
+
+2 b) find top 5 locations in the US who have got certified visa for each year?
+	
+     fil = FILTER h1b by case_status == 'CERTIFIED' or case_status == 'CERTIFIED-WITHDRAWN';
+     dis =foreach fil generate worksite1,year;
+     grp2013 = group dis by (worksite1,year);
+     cunt2013 = foreach grp2013 generate $0.year,$0.worksite1,COUNT(dis.$0) as TaprdVisa;
+     yer = group cunt2013 by $0;
+     top5 = foreach yer { sorted = order cunt2013 by TaprdVisa desc ; top = limit sorted 5 ; generate flatten(top); }; 
+
+     dump top5;
+
+3) Which industry has the most number of Data Scientist positions?
+
+   fil  = filter h1b by job_title == 'DATA SCIENTIST';
+   dis = foreach fil generate soc_name,job_title;
+   grup = group dis by soc_name;
+   con = foreach grup generate group,COUNT(dis.job_title) as total;
+   odr = order con by total desc;
+
+   dump odr;
+
+
+4) Which top 5 employers file the most petitions each year?
+
+   dis =foreach h1b generate employer_name,year;
+   grp2013 = group dis by (employer_name,year);
+   cunt2013 = foreach grp2013 generate $0.year,$0.employer_name,COUNT(dis.$0) as petin;
+   yer = group cunt2013 by $0;
+   top5 = foreach yer { sorted = order cunt2013 by petin desc ; top = limit sorted 5 ; generate flatten(top); }; 
+
+   dump top5;
+
+5) Find the most popular top 10 job positions for H1B visa applications for each year?
+
+   dis =foreach h1b generate job_title,year;
+   grp2013 = group dis by (job_title,year);
+   cunt2013 = foreach grp2013 generate $0.year,$0.job_title,COUNT(dis.$0) as Tapplications;
+   yer = group cunt2013 by $0;
+   top10 = foreach yer { sorted = order cunt2013 by Tapplications desc ; top = limit sorted 5 ; generate flatten(top); }; 
+
+   dump top10;
+
+6) Find the percentage and the count of each case status on total applications for each year. Create a graph depicting the pattern of All the 
+   cases over the period of time.
+
+   totalrecgrup = group h1b ALL;
+   totalrec = foreach totalrecgrup generate COUNT(h1b.soc_name)as totalApplications;
+   dis = foreach h1b generate year,case_status;
+   grp = GROUP dis by year;
+   con = foreach grp generate $0,COUNT($1) as case_application;
+   perc = foreach con generate $0,ROUND_TO(((case_application/(double)totalrec.totalApplications)*100),2);
+   odr = order perc by $1 desc;
+
+   dump odr;
+
+7) Create a bar graph to depict the number of applications for each year
+
+   dis = foreach h1b generate year,soc_name;
+   groupby = group dis by year;
+   con = foreach groupby generate $0,COUNT(dis.soc_name);
+
+   dump con;
+
+8) Find the average Prevailing Wage for each Job for each Year (take part time and full time separate)
+
+   fil = filter h1b by full_time_position == 'Y';
+   tme_Y = group fil by (job_title,year);
+   sum_Y = foreach tme_Y generate group,AVG(fil.prevailing_wage) as AVG_Y;
+   odr_Y = order sum_Y by $1 desc;
+
+   fil = filter h1b by full_time_position == 'N';
+   tme_N = group fil by (job_title,year);
+   sum_N = foreach tme_N generate group,AVG(fil.prevailing_wage) as AVG_N;
+   odr_N = order sum_N by $1 desc;
+
+   join1 = join sum_Y by $0,sum_N by $0;
+   for = foreach join1 generate $0,$1,$3;
+   odr = order for by $1 desc;
+   lim = limit odr 4;
+
+   dump lim;
+
+9) Which are top ten employers who have the highest success rate in petitions?
+
+   totalrecgrup = group h1b ALL;
+   totalrec = foreach totalrecgrup generate COUNT(h1b.soc_name)as totalApplications;
+
+   rec = foreach h1b generate employer_name,case_status;
+   fil_suc = FILTER rec by case_status == 'CERTIFIED' or case_status == 'CERTIFIED-WITHDRAWN';
+   rec1 = foreach fil_suc generate employer_name,case_status;
+   groupby = group rec1 by employer_name;
+   coutofEmplye = foreach groupby generate $0,COUNT(rec1.case_status) as cerftifiedApplications;
+
+   perc = foreach coutofEmplye generate $0,(cerftifiedApplications/(double)totalrec.totalApplications)*100;
+
+   odr = order perc by $1 desc;
+   lim = LIMIT odr 10;
+
+   dump lim;
+
+10) Which are the top 10 job positions which have the highest success rate in petitions?
+
+    totalrecgrup = group h1b ALL;
+    totalrec = foreach totalrecgrup generate COUNT(h1b.soc_name)as totalApplications;
+
+    rec = foreach h1b generate job_title,case_status;
+    fil_suc = FILTER rec by case_status == 'CERTIFIED' or case_status == 'CERTIFIED-WITHDRAWN';
+    rec1 = foreach fil_suc generate job_title,case_status;
+    groupby = group rec1 by job_title;
+    coutofEmplye = foreach groupby generate $0,COUNT(rec1.case_status) as cerftifiedApplications;
+
+    d = foreach coutofEmplye generate $0,(((cerftifiedApplications/(double)totalrec.totalApplications)*100));
+
+    odr = order d by $1 desc;
+    lim = LIMIT odr 10;
+
+    dump lim;
+
+

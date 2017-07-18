@@ -1,0 +1,54 @@
+
+USE CASES:
+----------
+1 a) Is the number of petitions with Data Engineer job title increasing over time?
+ 
+     select count(*) as rag,job_title,year from h1b where job_title =='DATA ENGINEER' group by 
+     job_title,year order by year; 
+
+1 b) Find top 5 job titles who are having highest growth in applications?
+
+     Select count(*) as rag,job_title from h1b group by job_title order by rag desc limit 5;
+
+2 a) Which part of the US has the most Data Engineer jobs for each year?
+
+     select  worksite,job_title,year, count(*) from h1b where job_title=='DATA ENGINEER' group by worksite,job_title,year;
+
+2 b) find top 5 locations in the US who have got certified visa for each year?
+
+     select  worksite, case_status,year,count(worksite) as rag from h1b where case_status == 'CERTIFIED' or case_status == 'CERTIFIED-WITHDRAW' group by worksite,case_status,year order by rag desc limit 5;
+
+3)  Which industry has the most number of Data Scientist positions?
+
+    select soc_name,count(job_title) as rag from h1b where job_title== 'DATA SCIENTIST' group
+ by soc_name order by rag;
+
+4)  Which top 5 employers file the most petitions each year?
+
+    select count(case_status) as rag,year,employer_name from h1b group by employer_name,year order by rag desc limit 5;
+
+5) Find the most popular top 10 job positions for H1B visa applications for each year?
+
+select job_title,year from(select rank() over(partition by year order by rag desc)as rag1,job_title,year from(select count(job_title)as rag,job_title,year from h1b group by job_title,year)a)b where rag1<=10;
+
+6) Find the percentage and the count of each case status on total applications for each year.  Create a graph depicting the pattern of All the cases over the period of time.
+
+Select case_status,year,(raghav*100)/a.roc from (Select count(*) as raghav ,case_status,year from h1b  group by case_status,year) b,(select count(*) as roc from h1b) a order by case_status; 
+
+7) Create a bar graph to depict the number of applications for each year
+
+select year,count(soc_name) as applications from h1b group by year;
+
+8) Find the average Prevailing Wage for each Job for each Year ? 
+
+select avg(prevailing_wage),job_title,year from h1b group by job_title,year,FULL_TIME_POSITION  order by job_title;
+
+9. Which are top ten employers who have the highest success rate in petitions?
+
+Select employer_name,(rag*100)/rag1 as top10 from (select count(*) as rag1,1 as tojoin from h1b)b join (Select count(*) as rag,1 as tojoin,employer_name from h1b where case_status="CERTIFIED" or case_status="CERTIFIED WITHDRAWN" group by employer_name) a on a.tojoin=b.tojoin  order  by  top10 limit 10;
+
+10) Which are the top 10 job positions which have the highest success rate in petitions?
+
+Select job_title,(top*100)/rag1 as top10  from (Select count(*) as top,job_title from h1b where case_status= "CERTIFIED" or case_status="CERTIFIED WITHDRAWN"  group by job_title )b,(Select count(*)  as rag1 from h1b) a  order by top10 limit 10;
+
+

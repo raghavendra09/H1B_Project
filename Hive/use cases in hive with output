@@ -1,0 +1,482 @@
+
+USE CASES:
+----------
+1 a) Is the number of petitions with Data Engineer job title increasing over time?
+ 
+     select count(*) as rag,job_title,year from h1b where job_title =='DATA ENGINEER' group by 
+     job_title,year order by year; 
+     
+     Output:   18	DATA ENGINEER	2011
+               32	DATA ENGINEER	2012
+               41	DATA ENGINEER	2013
+               89	DATA ENGINEER	2014
+               160	DATA ENGINEER	2015
+               251	DATA ENGINEER	2016  
+
+1 b) Find top 5 job titles who are having highest growth in applications?
+
+     Select count(*) as rag,job_title from h1b group by job_title order by rag desc limit 5;
+
+     Output: 249038	PROGRAMMER ANALYST
+             121307	SOFTWARE ENGINEER
+              70570	COMPUTER PROGRAMMER
+              61965	SYSTEMS ANALYST
+              42907	SOFTWARE DEVELOPER
+
+2 a) Which part of the US has the most Data Engineer jobs for each year?
+
+     select  worksite,job_title,year, count(*) from h1b where job_title=='DATA ENGINEER' group by worksite,job_title,year;
+
+     Output: 2011	ATLANTA, GEORGIA	               DATA ENGINEER	1
+             2011	FARMINGTON HILLS, MICHIGAN	       DATA ENGINEER	2
+             2011	HOUSTON, TEXAS	                       DATA ENGINEER	1
+             2011	INDIANAPOLIS, INDIANA	               DATA ENGINEER	1
+             2011	LOS ANGELES, CALIFORNIA	               DATA ENGINEER	1
+             2011	NEWTON, MASSACHUSETTS	               DATA ENGINEER	1
+             2011	NORWALK, CONNECTICUT	               DATA ENGINEER	1
+             2011	PLANO, TEXAS	                       DATA ENGINEER	2
+             2012	BURLINGTON, MASSACHUSETTS	       DATA ENGINEER	1
+             2012	FOLSOM, CALIFORNIA	               DATA ENGINEER	1
+             2012	LEXINGTON, MASSACHUSETTS	       DATA ENGINEER	2
+             2012	NEW YORK, NEW YORK	               DATA ENGINEER	1
+             2012	PEARLAND, TEXAS	                       DATA ENGINEER	1
+             2012	PONTIAC, MICHIGAN	               DATA ENGINEER	3
+             2012	SAN FRANCISCO, CALIFORNIA	       DATA ENGINEER	7
+             2012	SANTA MONICA, CALIFORNIA	       DATA ENGINEER	1
+             2012	SEATTLE, WASHINGTON	               DATA ENGINEER	2
+             2012	STERLING HEIGHTS, MICHIGAN	       DATA ENGINEER	1
+             2012	WOODLAND HILLS, CALIFORNIA	       DATA ENGINEER	1
+             2013	CINCINNATI, OHIO	               DATA ENGINEER	1
+             2013	DETROIT, MICHIGAN	               DATA ENGINEER	2
+             2013	DUBLIN, OHIO	                       DATA ENGINEER	2
+             2013	FRANKLIN, TENNESSEE	               DATA ENGINEER	1
+             2013	IRVINE, CALIFORNIA	               DATA ENGINEER	1
+             2013	MENLO PARK, CALIFORNIA	               DATA ENGINEER	10
+             2013	NORRISTOWN, PENNSYLVANIA	       DATA ENGINEER	1
+             2013	OLD TAPPAN, NEW JERSEY	               DATA ENGINEER	1
+             2013	OLYMPIA, WASHINGTON	               DATA ENGINEER	1
+             2013	REDWOOD CITY, CALIFORNIA	       DATA ENGINEER	1
+             2013	ROSEVILLE, CALIFORNIA	               DATA ENGINEER	1
+             2014	ALHAMBRA, CALIFORNIA	               DATA ENGINEER	2
+             2014	CALVERT, ALABAMA	               DATA ENGINEER	1
+             2014	CONCORD, MASSACHUSETTS	               DATA ENGINEER	1
+             2014	DULUTH, GEORGIA	                       DATA ENGINEER	1
+             2014	MOUNTAIN VIEW, CALIFORNIA	       DATA ENGINEER	5
+             2014	NEW YORK, NEW YORK	               DATA ENGINEER	9
+             2014	NEWARK, CALIFORNIA	               DATA ENGINEER	1
+             2014	NEWARK, NEW JERSEY	               DATA ENGINEER	1
+             2014	PALO ALTO, CALIFORNIA	               DATA ENGINEER	3
+             2014	SAN FRANCISCO, CALIFORNIA	       DATA ENGINEER	12
+             2014	SAN MATEO, CALIFORNIA	               DATA ENGINEER	2
+             2014	SANTA BARBARA, CALIFORNIA	       DATA ENGINEER	1
+             2014	SANTA CLARA, CALIFORNIA	               DATA ENGINEER	1
+             2014	SANTA MONICA, CALIFORNIA	       DATA ENGINEER	1
+             2014	SARATOGA, CALIFORNIA	               DATA ENGINEER	1
+             2014	SEATTLE, WASHINGTON	               DATA ENGINEER	3
+             2014	VIENNA, VIRGINIA	               DATA ENGINEER	2
+             2014	WAYNE, PENNSYLVANIA	               DATA ENGINEER	1
+             2015	AUSTIN, TEXAS	                       DATA ENGINEER	1
+             2015	BOSTON, MASSACHUSETTS	               DATA ENGINEER	3
+             2015	CHICAGO, ILLINOIS	               DATA ENGINEER	2
+             2015	CUPERTINO, CALIFORNIA	               DATA ENGINEER	1
+             2015	EAST ROCHESTER, NEW YORK	       DATA ENGINEER	2
+             2015	EL PASO, TEXAS	                       DATA ENGINEER	1
+             2015	FREMONT, CALIFORNIA	               DATA ENGINEER	1
+             2015	HARTFORD, CONNECTICUT	               DATA ENGINEER	1
+             2015	INDIANAPOLIS, INDIANA	               DATA ENGINEER	1
+             2015	MENLO PARK, CALIFORNIA	               DATA ENGINEER	19
+             2015	OMAHA, NEBRASKA	                       DATA ENGINEER	1
+             2015	PHILADELPHIA, PENNSYLVANIA	       DATA ENGINEER	1
+             2015	PLANO, TEXAS	                       DATA ENGINEER	1
+             2015	QUINCY, MASSACHUSETTS	               DATA ENGINEER	1
+             2015	RANCHO CORDOVA, CALIFORNIA	       DATA ENGINEER	1
+             2015	REDMOND, WASHINGTON	               DATA ENGINEER	1
+             2015	REDWOOD CITY, CALIFORNIA	       DATA ENGINEER	3
+             2015	ROOSEVELT ISLAND, NEW YORK	       DATA ENGINEER	1
+             2015	SAN JOSE, CALIFORNIA	               DATA ENGINEER	3
+             2015	SAN RAMON, CALIFORNIA	               DATA ENGINEER	2
+             2015	ST. PETERSBURG, FLORIDA                DATA ENGINEER	1
+             2015	SUNNYVALE, CALIFORNIA	               DATA ENGINEER	2
+             2015	TARRYTOWN, NEW YORK	               DATA ENGINEER	2
+             2015	WINSTON-SALEM, NORTH CAROLINA	       DATA ENGINEER	1
+             2016	ALLEN PARK, MICHIGAN	               DATA ENGINEER	1
+             2016	AMES, IOWA	                       DATA ENGINEER	2
+             2016	AMHERST, MASSACHUSETTS	               DATA ENGINEER	1
+             2016	BELLEVUE, WASHINGTON	               DATA ENGINEER	3
+             2016	BERKELEY LAKE, GEORGIA	               DATA ENGINEER	1
+             2016	BURLINGTON, MASSACHUSETTS	       DATA ENGINEER	1
+             2016	CAMBRIDGE, MASSACHUSETTS	       DATA ENGINEER	1
+             2016	CAMPBELL, CALIFORNIA	               DATA ENGINEER	2
+             2016	EL SEGUNDO, CALIFORNIA	               DATA ENGINEER	1
+             2016	EMERYVILLE, CALIFORNIA	               DATA ENGINEER	1
+             2016	ENCINO, CALIFORNIA	               DATA ENGINEER	2
+             2016	FOSTER CITY, CALIFORNIA	               DATA ENGINEER	1
+             2016	GLENDALE, CALIFORNIA	               DATA ENGINEER	1
+             2016	HAYWARD, CALIFORNIA	               DATA ENGINEER	1
+             2016	HILLSBORO, OREGON	               DATA ENGINEER	1
+             2016	LANSING, MICHIGAN	               DATA ENGINEER	1
+             2016	LOS GATOS, CALIFORNIA	               DATA ENGINEER	1
+             2016	MOUNTAIN VIEW, CALIFORNIA	       DATA ENGINEER	5
+             2016	NASHVILLE, TENNESSEE	               DATA ENGINEER	1
+             2016	NEW BRUNSWICK, NEW JERSEY	       DATA ENGINEER	1
+             2016	NEW YORK, NEW YORK	               DATA ENGINEER	34
+             2016	NEWARK, NEW JERSEY	               DATA ENGINEER	1
+             2016	NY, NEW YORK	                       DATA ENGINEER	1
+             2016	PALO ALTO, CALIFORNIA	               DATA ENGINEER	5
+             2016	PLYMOUTH, MINNESOTA	               DATA ENGINEER	2
+             2016	REDWOOD, CALIFORNIA	               DATA ENGINEER	1
+             2016	ROGERS, ARKANSAS	               DATA ENGINEER	2
+             2016	ROLLING MEADOWS, ILLINOIS	       DATA ENGINEER	3
+             2016	SAN BRUNO, CALIFORNIA	               DATA ENGINEER	2
+             2016	SAN CARLOS, CALIFORNIA	               DATA ENGINEER	2
+             2016	SAN DIEGO, CALIFORNIA	               DATA ENGINEER	4
+             2016	SAN FRANCISCO, CALIFORNIA	       DATA ENGINEER	33
+             2016	SAN MATEO, CALIFORNIA	               DATA ENGINEER	9
+             2016	SANTA BARBARA, CALIFORNIA	       DATA ENGINEER	1
+             2016	SANTA CLARA, CALIFORNIA	               DATA ENGINEER	5
+             2016	SANTA MONICA, CALIFORNIA	       DATA ENGINEER	2
+             2016	SCHAUMBURG, ILLINOIS	               DATA ENGINEER	1
+             2016	SEATTLE, WASHINGTON	               DATA ENGINEER	5
+             2016	SILVER SPRING, MARYLAND	               DATA ENGINEER	1
+             2016	TROY, MICHIGAN	                       DATA ENGINEER	1
+             2016	VENICE, CALIFORNIA	               DATA ENGINEER	1
+             2016	VIENNA, VIRGINIA	               DATA ENGINEER	3
+             2016	WALTHAM, MASSACHUSETTS	               DATA ENGINEER	3
+             2016	YORKTOWN HEIGHTS, NEW YORK	       DATA ENGINEER	1
+             2011	FOLSOM, CALIFORNIA	               DATA ENGINEER	1
+             2011	PONTIAC, MICHIGAN	               DATA ENGINEER	1
+             2011	ROCHESTER, NEW YORK	               DATA ENGINEER	1
+             2011	SAN FRANCISCO, CALIFORNIA	       DATA ENGINEER	3
+             2011	SEATTLE, WASHINGTON	               DATA ENGINEER	1
+             2011	SUPERIOR, COLORADO	               DATA ENGINEER	1
+             2012	ATLANTA, GEORGIA	               DATA ENGINEER	1
+             2012	BOSTON, MASSACHUSETTS	               DATA ENGINEER	1
+             2012	CHICAGO, ILLINOIS	               DATA ENGINEER	1
+             2012	DUBLIN, OHIO	                       DATA ENGINEER	1
+             2012	LAKE OSWEGO, OREGON	               DATA ENGINEER	1
+             2012	LOS ANGELES, CALIFORNIA                DATA ENGINEER	2
+             2012	MCLEAN, VIRGINIA	               DATA ENGINEER	1
+             2012	OLD TAPPAN, NEW JERSEY	               DATA ENGINEER	1
+             2012	OLYMPIA, WASHINGTON	               DATA ENGINEER	1
+             2012	WHITE PLAINS, NEW YORK	               DATA ENGINEER	1
+             2013	BURNS HARBOR, INDIANA	               DATA ENGINEER	1
+             2013	COLUMBIA, SOUTH CAROLINA	       DATA ENGINEER	1
+             2013	MOUNTAIN VIEW, CALIFORNIA	       DATA ENGINEER	1
+             2013	NEW YORK, NEW YORK	               DATA ENGINEER	4
+             2013	NEWARK, NEW JERSEY	               DATA ENGINEER	2
+             2013	ROCHESTER, NEW YORK	               DATA ENGINEER	1
+             2013	SAN DIEGO, CALIFORNIA	               DATA ENGINEER	1
+             2013	SAN FRANCISCO, CALIFORNIA	       DATA ENGINEER	5
+             2013	SANTA CLARA, CALIFORNIA	               DATA ENGINEER	1
+             2013	SEATTLE, WASHINGTON	               DATA ENGINEER	1
+             2013	WAYNE, PENNSYLVANIA	               DATA ENGINEER	1
+             2014	ATLANTA, GEORGIA	               DATA ENGINEER	1
+             2014	BOSTON, MASSACHUSETTS	               DATA ENGINEER	3
+             2014	CHICAGO, ILLINOIS	               DATA ENGINEER	3
+             2014	COLUMBUS, OHIO	                       DATA ENGINEER	2
+             2014	ENGLEWOOD, COLORADO	               DATA ENGINEER	1
+             2014	HOUSTON, TEXAS	                       DATA ENGINEER	1
+             2014	MCLEAN, VIRGINIA	               DATA ENGINEER	2
+             2014	MENLO PARK, CALIFORNIA	               DATA ENGINEER	13
+             2014	NAPERVILLE, ILLINOIS	               DATA ENGINEER	1
+             2014	OMAHA, NEBRASKA	                       DATA ENGINEER	4
+             2014	PLANO, TEXAS	                       DATA ENGINEER	1
+             2014	SAN JOSE, CALIFORNIA	               DATA ENGINEER	2
+             2014	SOUTH SAN FRANCISCO, CALIFORNIA	       DATA ENGINEER	2
+             2014	ST. PETERSBURG, FLORIDA	               DATA ENGINEER	3
+             2014	WALNUT CREEK, CALIFORNIA	       DATA ENGINEER	2
+             2015	ALPHARETTA, GEORGIA	               DATA ENGINEER	1
+             2015	BURLINGAME, CALIFORNIA	               DATA ENGINEER	1
+             2015	CAMBRIDGE, MASSACHUSETTS	       DATA ENGINEER	2
+             2015	CARLSBAD, CALIFORNIA	               DATA ENGINEER	1
+             2015	CULVER CITY, CALIFORNIA	               DATA ENGINEER	1
+             2015	GLENDALE, CALIFORNIA	               DATA ENGINEER	1
+             2015	MORRISVILLE, NORTH CAROLINA	       DATA ENGINEER	1
+             2015	MOUNTAIN VIEW, CALIFORNIA	       DATA ENGINEER	5
+             2015	NEW YORK, NEW YORK	               DATA ENGINEER	25
+             2015	PALO ALTO, CALIFORNIA	               DATA ENGINEER	3
+             2015	PORTLAND, MAINE	                       DATA ENGINEER	1
+             2015	SAN BRUNO, CALIFORNIA	               DATA ENGINEER	1
+             2015	SAN DIEGO, CALIFORNIA	               DATA ENGINEER	2
+             2015	SAN FRANCISCO, CALIFORNIA	       DATA ENGINEER	33
+             2015	SAN MATEO, CALIFORNIA	               DATA ENGINEER	12
+             2015	SANTA BARBARA, CALIFORNIA	       DATA ENGINEER	2
+             2015	SANTA MONICA, CALIFORNIA	       DATA ENGINEER	4
+             2015	SCHAUMBURG, ILLINOIS	               DATA ENGINEER	1
+             2015	SEATTLE, WASHINGTON	               DATA ENGINEER	6
+             2015	TAMPA, FLORIDA	                       DATA ENGINEER	1
+             2015	TROY, MICHIGAN	                       DATA ENGINEER	3
+             2016	ATLANTA, GEORGIA	               DATA ENGINEER	1
+             2016	AUSTIN, TEXAS	                       DATA ENGINEER	2
+             2016	BERKELEY, CALIFORNIA	               DATA ENGINEER	1
+             2016	BOSTON, MASSACHUSETTS	               DATA ENGINEER	3
+             2016	CALABASAS, CALIFORNIA	               DATA ENGINEER	1
+             2016	CHATTANOOGA, TENNESSEE	               DATA ENGINEER	1
+             2016	CHICAGO, ILLINOIS	               DATA ENGINEER	6
+             2016	EAST ROCHESTER, NEW YORK	       DATA ENGINEER	3
+             2016	FORT LAUDERDALE, FLORIDA	       DATA ENGINEER	1
+             2016	JERSEY CITY, NEW JERSEY	               DATA ENGINEER	1
+             2016	LOS ALTOS, CALIFORNIA	               DATA ENGINEER	1
+             2016	LOS ANGELES, CALIFORNIA	               DATA ENGINEER	2
+             2016	MCLEAN, VIRGINIA	               DATA ENGINEER	1
+             2016	MENLO PARK, CALIFORNIA	               DATA ENGINEER	35
+             2016	MILWAUKEE, WISCONSIN	               DATA ENGINEER	1
+             2016	NAPERVILLE, ILLINOIS	               DATA ENGINEER	1
+             2016	NEW YORK CITY, NEW YORK	               DATA ENGINEER	2
+             2016	NORTHBROOK, ILLINOIS	               DATA ENGINEER	1
+             2016	OMAHA, NEBRASKA	                       DATA ENGINEER	2
+             2016	PHOENIX, ARIZONA	               DATA ENGINEER	1
+             2016	PLANO, TEXAS	                       DATA ENGINEER	4
+             2016	RANCHO CORDOVA, CALIFORNIA	       DATA ENGINEER	2
+             2016	REDWOOD CITY, CALIFORNIA	       DATA ENGINEER	6
+             2016	RICHMOND, VIRGINIA	               DATA ENGINEER	2
+             2016	SAN JOSE, CALIFORNIA	               DATA ENGINEER	4
+             2016	SAN RAFAEL, CALIFORNIA	               DATA ENGINEER	1
+             2016	ST. PETERSBURG, FLORIDA	               DATA ENGINEER	2
+             2016	STEVENS POINT, WISCONSIN	       DATA ENGINEER	2
+             2016	SUNNYVALE, CALIFORNIA	               DATA ENGINEER	5
+             2016	TEANECK, NEW JERSEY	               DATA ENGINEER	1
+             2016	WALNUT CREEK, CALIFORNIA	       DATA ENGINEER	1
+             2016	WARREN, MICHIGAN	               DATA ENGINEER	1
+             2016	WINSTON-SALEM, NORTH CAROLINA	       DATA ENGINEER	1
+
+2 b) find top 5 locations in the US who have got certified visa for each year?
+
+     select  worksite, case_status,year,count(worksite) as rag from h1b where case_status == 'CERTIFIED' or case_status == 'CERTIFIED-WITHDRAW' group by worksite,case_status,year order by rag desc limit 5;
+
+     Output: 2016	CERTIFIED	NEW YORK, NEW YORK	34639
+             2015	CERTIFIED	NEW YORK, NEW YORK	31266
+             2014	CERTIFIED	NEW YORK, NEW YORK	27634
+             2012	CERTIFIED	NEW YORK, NEW YORK	23737
+             2013	CERTIFIED	NEW YORK, NEW YORK	23537
+
+3)  Which industry has the most number of Data Scientist positions?
+
+    select soc_name,count(job_title) as rag from h1b where job_title== 'DATA SCIENTIST' group
+ by soc_name order by rag;
+
+    Output: BUSINESS INTELLIGENCE ANALYSTS	                                1
+            SOFTWARE DEVELOPERS, APPLICATIONS, R&D	                        1
+            Materials Scientists	                                        1
+            Market Research Analysts and Marketing Specialists	                1
+            MATERIALS SCIENTISTS	                                        1
+            Engineers, All Other	                                        1
+            Computer Software Engineers, Applications	                        1
+            COMPUTER SYSTEMS ANALYST	                                        1
+            COMPUTER & INFORMATION RESEARCH SCIENTISTS	                        1
+            CLINICAL DATA MANAGERS	                                        1
+            CIVIL ENGINEERS	                                                1
+            ACTUARIES	                                                        1
+            Survey Researchers	                                                1
+            MEDICAL SCIENTISTS, EXCEPT EPIDEMIOLOGISTS	                        1
+            MATERIALS ENGINEERS	                                                1
+            MANAGEMENT ANALYSTS	                                                1
+            Life Scientists, All Other	                                        1
+            Financial Analysts	                                                1
+            Electrical Engineers	                                        1
+            Credit Analysts	                                                1
+            Computer and Information Scientists Research	                1
+            COMPUTER OCCUPATIONS, ALL OTHER*	                                1
+            COMPUTER & INFORMATION RESEARCH SCIENTIST	                        1
+            Computer Programmers	                                        2
+            Management Analysts	                                                2
+            ELECTRICAL ENGINEERS	                                        2
+            Biological Scientists, All Other	                                2
+            Economists	                                                        2
+            ENGINEERS, ALL OTHER	                                        2
+            STATISTICAL ASSISTANTS	                                        2
+            SALES ENGINEERS	                                                2
+            SURVEY RESEARCHERS	                                                2
+            COMPUTER NETWORK ARCHITECTS	                                        3
+            COMPUTER AND INFORMATION SYSTEMS MANAGERS	                        3
+            INDUSTRIAL-ORGANIZATIONAL PSYCHOLOGISTS	                        3
+            ECONOMISTS	                                                        5
+            COMPUTER PROGRAMMERS	                                        5
+            BIOLOGICAL SCIENTISTS, ALL OTHER	                                6
+            DATABASE ADMINISTRATORS                                        	6
+            MARKET RESEARCH ANALYSTS AND MARKETING SPECIALISTS	                7
+            MATHEMATICAL TECHNICIANS	                                        7
+            Database Administrators	                                        8
+            NA	                                                                9
+            Mathematicians	                                               10
+            FINANCIAL SPECIALISTS, ALL OTHER	                               11
+            Software Developers, Systems Software	                       12
+            Computer Systems Analysts	                                       21
+            Computer Occupations, All Other	                               23
+            SOFTWARE DEVELOPERS, SYSTEMS SOFTWARE	                       37
+            Software Developers, Applications	                               38
+            Operations Research Analysts	                               64
+            COMPUTER SYSTEMS ANALYSTS	                                       66
+            SOFTWARE DEVELOPERS, APPLICATIONS	                               79
+            Statisticians	                                              104
+            MATHEMATICIANS	                                              108
+            COMPUTER OCCUPATIONS, ALL OTHER	                              121
+            Computer and Information Research Scientists	              134
+            OPERATIONS RESEARCH ANALYSTS	                              253
+            COMPUTER AND INFORMATION RESEARCH SCIENTISTS	              333
+            STATISTICIANS	                                              415
+
+4)  Which top 5 employers file the most petitions each year?
+
+    select count(case_status) as rag,year,employer_name from h1b group by employer_name,year order by rag desc limit 5;
+
+    Output: 33245	2015	INFOSYS LIMITED
+            32223	2013	INFOSYS LIMITED
+            25352	2016	INFOSYS LIMITED
+            23759	2014	INFOSYS LIMITED
+            16725	2016	CAPGEMINI AMERICA INC
+
+5) Find the most popular top 10 job positions for H1B visa applications for each year?
+
+select job_title,year from(select rank() over(partition by year order by rag desc)as rag1,job_title,year from(select count(job_title)as rag,job_title,year from h1b group by job_title,year)a)b where rag1<=10;
+
+Output: PROGRAMMER ANALYST	        2011
+        SOFTWARE ENGINEER	        2011
+        COMPUTER PROGRAMMER	        2011
+        SYSTEMS ANALYST	                2011
+        BUSINESS ANALYST	        2011
+        COMPUTER SYSTEMS ANALYST	2011
+        ASSISTANT PROFESSOR	        2011
+        PHYSICAL THERAPIST	        2011
+        SENIOR SOFTWARE ENGINEER	2011
+        SENIOR CONSULTANT	        2011
+        PROGRAMMER ANALYST	        2012
+        SOFTWARE ENGINEER	        2012
+        COMPUTER PROGRAMMER	        2012
+        SYSTEMS ANALYST	                2012
+        BUSINESS ANALYST	        2012
+        COMPUTER SYSTEMS ANALYST	2012
+        SOFTWARE DEVELOPER	        2012
+        PHYSICAL THERAPIST	        2012
+        ASSISTANT PROFESSOR	        2012
+        SENIOR CONSULTANT	        2012
+        PROGRAMMER ANALYST	        2013
+        SOFTWARE ENGINEER	        2013
+        COMPUTER PROGRAMMER	        2013
+        SYSTEMS ANALYST	                2013
+        TECHNOLOGY LEAD - US	        2013
+        TECHNOLOGY ANALYST - US	        2013
+        BUSINESS ANALYST	        2013
+        COMPUTER SYSTEMS ANALYST	2013
+        SOFTWARE DEVELOPER	        2013
+        SENIOR CONSULTANT	        2013
+        PROGRAMMER ANALYST	        2014
+        SOFTWARE ENGINEER	        2014
+        COMPUTER PROGRAMMER	        2014
+        SYSTEMS ANALYST	                2014
+        SOFTWARE DEVELOPER	        2014
+        BUSINESS ANALYST	        2014
+        COMPUTER SYSTEMS ANALYST	2014
+        TECHNOLOGY LEAD - US	        2014
+        TECHNOLOGY ANALYST - US	        2014
+        SENIOR CONSULTANT	        2014
+        PROGRAMMER ANALYST	        2015
+        SOFTWARE ENGINEER	        2015
+        COMPUTER PROGRAMMER	        2015
+        SYSTEMS ANALYST	                2015
+        SOFTWARE DEVELOPER	        2015
+        BUSINESS ANALYST	        2015
+        TECHNOLOGY LEAD - US	        2015
+        COMPUTER SYSTEMS ANALYST	2015
+        TECHNOLOGY ANALYST - US	        2015
+        SENIOR SOFTWARE ENGINEER	2015
+        PROGRAMMER ANALYST	        2016
+        SOFTWARE ENGINEER	        2016
+        SOFTWARE DEVELOPER	        2016
+        SYSTEMS ANALYST	                2016
+        COMPUTER PROGRAMMER	        2016
+        BUSINESS ANALYST	        2016
+        COMPUTER SYSTEMS ANALYST	2016
+        SENIOR SOFTWARE ENGINEER	2016
+        DEVELOPER	                2016
+        TECHNOLOGY LEAD - US	        2016
+
+6) Find the percentage and the count of each case status on total applications for each year.  Create a graph depicting the pattern of All the cases over the period of time.
+
+Select case_status,year,(raghav*100)/a.roc from (Select count(*) as raghav ,case_status,year from h1b  group by case_status,year) b,(select count(*) as roc from h1b) a order by case_status; 
+
+Output: CERTIFIED		2016	18.97273721916638
+	CERTIFIED		2014	15.159111990394495
+        CERTIFIED		2012	11.746026988004775
+	CERTIFIED		2015	18.227744388323515
+	CERTIFIED		2013	12.754638303116293
+	CERTIFIED		2011	10.256174551074208
+	CERTIFIED-WITHDRAWN	2015	1.367918479772319
+	CERTIFIED-WITHDRAWN	2013	1.180104881188498
+	CERTIFIED-WITHDRAWN	2011	0.38621856520269315
+	CERTIFIED-WITHDRAWN	2016	1.5684550424737174
+	CERTIFIED-WITHDRAWN	2014	1.2106799624972315
+	CERTIFIED-WITHDRAWN	2012	1.0364219827507248
+	DENIED			2011	0.9702092794372587
+	DENIED			2015	0.3638035001473799
+	DENIED			2013	0.40437043809295425
+	DENIED			2016	0.30558428214338645
+	DENIED			2014	0.3963103404059025
+	DENIED			2012	0.7026273587026574
+	WITHDRAWN		2016	0.7290724726014964
+	WITHDRAWN		2014	0.5340314310503607
+	WITHDRAWN		2012	0.35720887476706487
+	WITHDRAWN		2013	0.3860187280699563
+	WITHDRAWN		2011	0.3365590377175935
+	WITHDRAWN		2015	0.6479719028991372
+
+
+7) Create a bar graph to depict the number of applications for each year
+
+select year,count(soc_name) as applications from h1b group by year;
+
+Output: 2011	358767
+	2013	442114
+	2015	618727
+	2012	415607
+	2014	519427
+	2016	647803
+
+8) Find the average Prevailing Wage for each Job for each Year ? 
+
+select avg(prevailing_wage),job_title,year from h1b group by job_title,year,FULL_TIME_POSITION  order by job_title;
+
+Output: output is too long so i am kept limit 5 
+
+select avg(prevailing_wage),job_title,year from h1b group by job_title,year,FULL_TIME_POSITION  order by job_title desc limit 5;
+
+Output: 53872.0	 TEST ANALYST - US		2013
+	96033.0	 TECHNOLOGY ARCHITECT - US	2013
+	46779.0	 TEAM LEAD - US			2014
+	61776.0	 SYSTEMS ANALYST		2015
+	42078.5	 SYSTEMS ANALYST		2011
+
+9. Which are top ten employers who have the highest success rate in petitions?
+
+Select employer_name,(rag*100)/rag1 as top10 from (select count(*) as rag1,1 as tojoin from h1b)b join (Select count(*) as rag,1 as tojoin,employer_name from h1b where case_status="CERTIFIED" or case_status="CERTIFIED WITHDRAWN" group by employer_name) a on a.tojoin=b.tojoin  order  by  top10 limit 10;
+
+Output:  ÈZE BULLES DRINKS LLC				3.330618878946991E-5
+	 ZYTUS INC					3.3306055673736545E-5
+	 ZYRION, INC.					3.3306055673736545E-5
+	 ZYNGENIA, INC.					3.3306055673736545E-5
+	 ZYMOGENETICS, A BRISTOL-MYERS SQUIBB COMPANY	3.3306055673736545E-5
+	 ZYME SOLUTIONS, INC.				3.3306055673736545E-5
+	 ZYLOG SYSTEMS LTD				3.3306055673736545E-5
+	 ZYLOG SYSTEMS LIMITED.				3.3306055673736545E-5
+	 ZYLOG SYSTEMS LIMITED DBA ZSL, INC.		3.3306055673736545E-5
+	 ZYKIS, LLC					3.3306055673736545E-5
+
+10) Which are the top 10 job positions which have the highest success rate in petitions?
+
+Select job_title,(top*100)/rag1 as top10  from (Select count(*) as top,job_title from h1b where case_status= "CERTIFIED" or case_status="CERTIFIED WITHDRAWN"  group by job_title )b,(Select count(*)  as rag1 from h1b) a  order by top10 limit 10;
+
+Output: TEST ANALYST - US				3.3306055673736545E-5
+ 	SAS ANALYST					3.3306055673736545E-5
+ 	PROJECT MANAGERS				3.3306055673736545E-5
+ 	ORACLE APPS DBA					3.3306055673736545E-5
+	BUSINESS INTELLIGENCE ANALYST			3.3306055673736545E-5
+	[HIOX] COMMERCIAL SPECIALIST (SALES ENGINEER)	3.3306055673736545E-5
+	ZOO BIRD KEEPER					3.3306055673736545E-5
+	ZONE MERCHANDISER				3.3306055673736545E-5
+	ZONE ENGINEER					3.3306055673736545E-5
+	ZMS ENGINEER					3.3306055673736545E-5
+
+
+
+
+
